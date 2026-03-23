@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GST Model Test 1.0 - SolveSphere</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <style>
         :root {
             --primary-bg: #0d1117;
@@ -39,16 +36,17 @@
 
         #wrapper-main { max-width: 900px; margin: 0 auto; }
 
-        /* Controls */
         #top-nav { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 30px; }
+        
         .btn {
             padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border);
-            cursor: pointer; font-weight: 700; transition: 0.2s;
+            cursor: pointer; font-weight: 700; transition: 0.2s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
         }
+        
         #btn-mode { background: var(--card-bg); color: var(--text-main); }
-        #btn-pdf { background: var(--accent); color: white; border: none; }
+        #btn-download { background: var(--accent); color: white; border: none; }
 
-        /* Routine Content */
         #capture-area { 
             padding: 50px 40px; 
             border-radius: 24px; 
@@ -61,18 +59,12 @@
         #brand { font-size: 1.1rem; color: var(--accent); letter-spacing: 3px; font-weight: 700; text-transform: uppercase; }
         #main-title { font-size: 2.8rem; margin-top: 10px; font-weight: 800; }
 
-        /* Table Style for Compact View */
         .test-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .test-row { 
-            border-bottom: 1px solid var(--border);
-            transition: 0.3s;
-        }
-        .test-row:hover { background: rgba(88, 166, 255, 0.05); }
+        .test-row { border-bottom: 1px solid var(--border); transition: 0.3s; }
         .test-cell { padding: 18px 15px; font-size: 1.15rem; }
         .test-name { font-weight: 700; color: var(--accent); }
         .test-date { text-align: right; opacity: 0.8; font-weight: 600; }
 
-        /* Footer */
         #premium-footer {
             margin-top: 40px; padding: 30px; border-radius: 15px;
             background: rgba(0,0,0,0.1); border-top: 3px solid var(--accent);
@@ -80,43 +72,40 @@
         .guide-item { margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 1rem; }
         .dot { color: var(--accent); }
         #slogan { text-align: center; margin-top: 30px; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
-
-        #loader { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; color: white; justify-content: center; align-items: center; flex-direction: column; }
     </style>
 </head>
-<body>
-
-    <div id="loader"><h2>Generating GST Routine...</h2></div>
+<body id="body-main">
 
     <div id="wrapper-main">
         <nav id="top-nav">
             <button class="btn" id="btn-mode" onclick="toggleTheme()">🌓 থিম পরিবর্তন</button>
-            <button class="btn" id="btn-pdf" onclick="generatePDF()">📥 ডাউনলোড PDF</button>
+            <a href="modeltest-black.png" download="GST_Routine_SolveSphere.png" class="btn" id="btn-download">
+                📥 ডাউনলোড রুটিন
+            </a>
         </nav>
 
         <div id="capture-area">
             <header id="header-box">
-                <p id="brand">SolveSphere Presents</p>
-                <h1 id="main-title">GST Model Test 1.0</h1>
+                <p id="brand" id="brand-text">SolveSphere Presents</p>
+                <h1 id="main-title" id="title-text">GST Model Test 1.0</h1>
             </header>
 
-            <table class="test-table">
+            <table class="test-table" id="table-01">
                 <tbody id="routine-body">
                     </tbody>
             </table>
 
             <footer id="premium-footer">
-                <div class="guide-item"><span class="dot">●</span> <p>প্রতিটি মডেল টেস্ট ১০০ নম্বরের পরিবর্তে GST স্ট্যান্ডার্ড <strong>৯০ মার্কসের</strong> হবে।</p></div>
-                <div class="guide-item"><span class="dot">●</span> <p>অপশনাল সাবজেক্টের পরিবর্তে শিক্ষার্থীরা নিজের পছন্দমতো <strong>বাংলা অথবা ইংরেজি</strong> উত্তর করতে পারবে।</p></div>
-                <div class="guide-item"><span class="dot">●</span> <p>পরীক্ষাগুলো GST এর সর্বশেষ সিলেবাস ও প্রশ্নের ধরন অনুযায়ী প্রস্তুত করা হয়েছে।</p></div>
+                <div class="guide-item"><span class="dot">●</span> <p id="guide-1">প্রতিটি মডেল টেস্ট GST স্ট্যান্ডার্ড <strong>৯০ মার্কসের</strong> হবে।</p></div>
+                <div class="guide-item"><span class="dot">●</span> <p id="guide-2">অপশনাল সাবজেক্টের পরিবর্তে শিক্ষার্থীরা নিজের পছন্দমতো <strong>বাংলা অথবা ইংরেজি</strong> উত্তর করতে পারবে।</p></div>
                 
-                <div id="slogan">বিজয় এপ্রিল, ইনশাআল্লাহ</div>
+                <div id="slogan" id="slogan-text">বিজয় এপ্রিল, ইনশাআল্লাহ</div>
             </footer>
         </div>
     </div>
 
     <script>
-        // Generate 10 days sequence
+        // Auto-generate 10 days sequence starting from March 29, 2026
         const routineBody = document.getElementById('routine-body');
         const startDate = new Date('2026-03-29');
         const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
@@ -130,8 +119,8 @@
             let year = currentDate.getFullYear();
 
             routineBody.innerHTML += `
-                <tr class="test-row">
-                    <td class="test-cell test-name">GST MODEL TEST-0${i < 10 ? '0' + i : i}</td>
+                <tr class="test-row" id="row-${i}">
+                    <td class="test-cell test-name">GST MODEL TEST-0${i < 10 ? i : i}</td>
                     <td class="test-cell test-date">${day} ${month}, ${year}</td>
                 </tr>
             `;
@@ -139,34 +128,8 @@
 
         function toggleTheme() {
             const root = document.getElementById('gst-root-2026');
-            root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        async function generatePDF() {
-            const loader = document.getElementById('loader');
-            loader.style.display = 'flex';
-            const element = document.getElementById('capture-area');
-            
-            try {
-                const canvas = await html2canvas(element, {
-                    scale: 3, // Very high quality
-                    useCORS: true,
-                    backgroundColor: getComputedStyle(document.body).backgroundColor
-                });
-
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('GST_Model_Test_1.0_Routine.pdf');
-            } catch (e) {
-                alert("PDF তৈরি করতে সমস্যা হয়েছে।");
-            } finally {
-                loader.style.display = 'none';
-            }
+            const current = root.getAttribute('data-theme');
+            root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
         }
     </script>
 </body>
