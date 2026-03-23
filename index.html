@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark" id="ss-root-2026">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolveSphere - Full Revision Routine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-bg: #0b0e14;
+            --gradient-bg: linear-gradient(135deg, #0b0e14 0%, #1a1c2c 50%, #0b0e14 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --accent: #ff4757;
+            --sub-card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --primary-bg: #f0f2f5;
+            --gradient-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1e272e;
+            --accent: #ee5253;
+            --sub-card: rgba(0, 0, 0, 0.05);
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+
+        body {
+            background: var(--gradient-bg);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px 15px;
+            transition: 0.3s;
+        }
+
+        #capture-area { padding: 30px; border-radius: 20px; }
+
+        #wrapper-main { max-width: 1100px; margin: 0 auto; }
+
+        #top-nav { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .btn {
+            padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer;
+            font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        #btn-mode { background: var(--text-main); color: var(--primary-bg); }
+        #btn-pdf { background: #00d2ff; color: #fff; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); }
+
+        #header-box { text-align: center; margin-bottom: 50px; }
+        #brand-name { color: var(--accent); font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; display: block; font-weight: bold; }
+        #main-title { background: var(--accent); color: white; padding: 12px 35px; border-radius: 15px; font-size: 2.2rem; display: inline-block; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3); }
+
+        #routine-grid { display: grid; gap: 30px; }
+        .exam-card { 
+            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 25px; padding: 30px;
+        }
+        .date-text { color: #ffd700; font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; display: block; border-left: 5px solid var(--accent); padding-left: 15px; }
+
+        .sub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .sub-box { background: var(--sub-card); border-radius: 15px; padding: 15px; border: 1px solid var(--border); transition: 0.3s; }
+        .sub-box:hover { border-color: var(--accent); background: rgba(255, 71, 87, 0.05); }
+        .sub-label { background: var(--accent); color: white; padding: 3px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; display: inline-block; }
+        .topics { font-size: 0.95rem; line-height: 1.6; opacity: 0.9; }
+
+        #premium-footer {
+            margin-top: 60px; padding: 40px; border-radius: 25px;
+            background: linear-gradient(45deg, rgba(255, 71, 87, 0.1), rgba(0, 210, 255, 0.1));
+            border: 1px solid var(--border); text-align: center;
+        }
+        #note-head { color: #ffd700; font-size: 1.3rem; margin-bottom: 15px; display: block; font-weight: 700; }
+        #note-desc { font-size: 1.1rem; line-height: 1.7; color: var(--text-main); margin-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        #slogan { font-size: 2.2rem; font-weight: 800; color: var(--accent); text-shadow: 0 0 20px rgba(255, 71, 87, 0.4); }
+
+        #loader { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:999; color:white; justify-content:center; align-items:center; flex-direction:column; }
+    </style>
+</head>
+<body id="body-el-01">
+
+    <div id="loader"><h2>হাই-কোয়ালিটি PDF তৈরি হচ্ছে...</h2><p>অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।</p></div>
+
+    <div id="wrapper-main">
+        <nav id="top-nav">
+            <button class="btn" id="btn-mode" onclick="toggleTheme()">🌓 থিম পরিবর্তন</button>
+            <button class="btn" id="btn-pdf" onclick="generatePDF()">📥 ডাউনলোড PDF</button>
+        </nav>
+
+        <div id="capture-area">
+            <header id="header-box">
+                <span id="brand-name">SolveSphere Exclusive</span>
+                <h1 id="main-title">রিভিশন এক্সাম রুটিন ২০২৬</h1>
+            </header>
+
+            <div id="routine-grid">
+                <div class="exam-card" id="exam-1">
+                    <span class="date-text">২৮ মার্চ, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">ভেক্টর, নিউটনিয়ান বলবিদ্যা</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">স্থিতিবিদ্যা, সরল রেখা</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">পরিমাণগত রসায়ন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">অণুজীব, নগ্নবীজী ও আবৃতবীজী, টিস্যু ও টিস্যুতন্ত্র</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Parts of Speech, Determiners, Noun, Pronoun, Adjective</p></div>
+                    </div>
+                </div>
+
+                <div class="exam-card" id="exam-2">
+                    <span class="date-text">৩০ মার্চ, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">আদর্শ গ্যাস, তাপগতিবিদ্যা</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">ম্যাট্রিক্স ও নির্ণায়ক, বৃত্ত</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">তড়িৎ রসায়ন, পরিবেশ রসায়ন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">পরিপাক ও শোষণ, রক্ত ও সঞ্চালন</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Adverbs, Verbs, Subject-verb Agreement, Identification of Parts of Speech</p></div>
+                    </div>
+                </div>
+
+                <div class="exam-card" id="exam-3">
+                    <span class="date-text">০১ এপ্রিল, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">কাজ শক্তি ও ক্ষমতা, পদার্থের গাঠনিক ধর্ম, ভৌত আলোকবিজ্ঞান</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">ত্রিকোণমিতি (১ম+২য় পত্র)</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">প্রাণীর বিভিন্নতা ও শ্রেণীবিন্যাস, শ্বসন ও শারীরবৃত্ত, চলন ও অঙ্গচালনা</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Preposition, Right Forms of Verbs, Sequence of Tense</p></div>
+                    </div>
+                </div>
+
+                <div class="exam-card" id="exam-4">
+                    <span class="date-text">০৩ এপ্রিল, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">স্থির তড়িৎ, চল তড়িৎ</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">অন্তরীকরণ, গতিবিদ্যা</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">গুণগত রসায়ন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">উদ্ভিদ শারীরতত্ত্ব, কোষ বিভাজন</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Condition, Voice, Vocabulary, Articles, Translation</p></div>
+                    </div>
+                </div>
+
+                <div class="exam-card" id="exam-5">
+                    <span class="date-text">০৫ এপ্রিল, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">পর্যায়বৃত্ত গতি, মহাকর্ষ ও অভিকর্ষ</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">যোগজীকরণ, বহুপদী</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">রাসায়নিক পরিবর্তন, কর্মমুখী রসায়ন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">কোষ ও কোষের গঠন, জিনতত্ত্ব ও বিবর্তন</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Sentence Correction, Narration, Transformation</p></div>
+                    </div>
+                </div>
+
+                <div class="exam-card" id="exam-6">
+                    <span class="date-text">০৭ এপ্রিল, ২০২৬</span>
+                    <div class="sub-grid">
+                        <div class="sub-box"><span class="sub-label">ফিজিক্স</span><p class="topics">সেমিকন্ডাক্টর, আধুনিক পদার্থবিজ্ঞান, নিউক্লিয়ার পদার্থবিজ্ঞান</p></div>
+                        <div class="sub-box"><span class="sub-label">ম্যাথ</span><p class="topics">জটিল সংখ্যা, কনিক</p></div>
+                        <div class="sub-box"><span class="sub-label">কেমিস্ট্রি</span><p class="topics">জৈব রসায়ন</p></div>
+                        <div class="sub-box"><span class="sub-label">বায়োলজি</span><p class="topics">প্রাণীর পরিচিতি, জীব প্রযুক্তি</p></div>
+                        <div class="sub-box"><span class="sub-label">ইংরেজি</span><p class="topics">Causative, Subjunctive, Completing Sentence, Synonym/Antonym, Tag, Embedding, Spelling, Clause & Phrase</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <footer id="premium-footer">
+                <span id="note-head">⚠️ রিভিশন রুলস ও নির্দেশিকা</span>
+                <p id="note-desc">১ম রিভিশন এক্সাম হবে ৬০ মার্কসের। এরপর প্রতি রিভিশন এক্সামে আগের পরীক্ষার টপিকগুলোও অন্তর্ভুক্ত থাকবে। প্রতি নতুন পরীক্ষায় মোট মার্কস ১০ করে বৃদ্ধি পাবে। নিজেকে প্রস্তুুত করো আগামীর জন্য!</p>
+                <div id="slogan">কামব্যাকের এপ্রিল, ইনশাআল্লাহ</div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const root = document.getElementById('ss-root-2026');
+            const current = root.getAttribute('data-theme');
+            root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        }
+
+        async function generatePDF() {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+            
+            const element = document.getElementById('capture-area');
+            
+            // Setting a fixed width for consistent capture
+            const originalStyle = element.style.width;
+            element.style.width = '1100px';
+
+            const canvas = await html2canvas(element, {
+                scale: 2, // 2x quality
+                useCORS: true,
+                backgroundColor: null,
+                logging: false
+            });
+            
+            element.style.width = originalStyle;
+
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            
+            // Setup PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('SolveSphere_Official_Routine_2026.pdf');
+            
+            loader.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
